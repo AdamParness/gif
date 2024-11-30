@@ -25,6 +25,10 @@
 
     fetch('https://api.giphy.com/v1/gifs/translate?api_key=bfjGTkRfy4INFdqO5DhM1Cq9xZUrOQ1A&s=cats', {mode: 'cors'})
         .then(function(response) {
+            // Check for network-level errors
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
         return response.json();
         })
         .then(function(response) {
@@ -39,6 +43,10 @@
     function fetchRandomGif(){
         fetch('https://api.giphy.com/v1/gifs/translate?api_key=bfjGTkRfy4INFdqO5DhM1Cq9xZUrOQ1A&s=cats', {mode: 'cors'})
         .then(function(response) {
+            // Check for network-level errors
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
         return response.json();
         })
         .then(function(response) {
@@ -62,14 +70,34 @@
         else {
                 fetch(url, {mode: 'cors'})
                 .then(function(response) {
+                    // Check for network-level errors
+                    if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
                     return response.json();
                 })
                 .then(function(response) {
+                    if (data.data.length === 0) {
+                        displayError('No gifs found for this search term.');
+                        return;
+                    }
+                    
                     img.src = response.data.images.original.url;
-                }).catch(e => {
-                console.log(e)
+                }).catch(error => {
+                    console.error('Giphy Search Error:', error);
+                    displayError('An error occurred while searching for gifs. Please try again.');
                 });
                 }
+    }
+
+    function displayError(message) {
+        errorContainer.textContent = message;
+        
+        // Optional: Display default image
+        const defaultImage = document.createElement('img');
+        defaultImage.src = DEFAULT_IMAGE;
+        defaultImage.alt = 'Default image';
+        gifContainer.appendChild(defaultImage);
     }
   </script>
   <style>
